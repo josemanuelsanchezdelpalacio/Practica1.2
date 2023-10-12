@@ -7,12 +7,18 @@ public class Empleado {
     private String nombre;
     private Double sueldo;
     private Date añoNacimiento, antiguedad;
+    private int idDepartamento;
 
     public Empleado(String nombre, Double sueldo, Date añoNacimiento, Date antiguedad) {
         this.nombre = nombre;
         this.sueldo = sueldo;
         this.añoNacimiento = añoNacimiento;
         this.antiguedad = antiguedad;
+    }
+
+    public Empleado(String nombre, Double sueldo, Date añoNacimiento, Date antiguedad, int idDepartamento) {
+        this(nombre, sueldo, añoNacimiento, antiguedad);
+        this.idDepartamento = idDepartamento;
     }
 
     public String getNombre() {
@@ -47,6 +53,14 @@ public class Empleado {
         this.antiguedad = antiguedad;
     }
 
+    public int getIdDepartamento() {
+        return idDepartamento;
+    }
+
+    public void setIdDepartamento(int idDepartamento) {
+        this.idDepartamento = idDepartamento;
+    }
+
     @Override
     public String toString() {
         return "Empleado{" +
@@ -54,6 +68,7 @@ public class Empleado {
                 ", sueldo=" + sueldo +
                 ", añoNacimiento=" + añoNacimiento +
                 ", antiguedad=" + antiguedad +
+                ", idDepartamento=" + idDepartamento +
                 '}';
     }
 }

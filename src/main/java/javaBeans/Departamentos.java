@@ -11,6 +11,8 @@ public class Departamentos extends DefaultHandler {
     private ArrayList<Departamento> departamentos = new ArrayList<>();
     private Departamento depAux;
 
+    private Integer id;
+
     //para almacenar el texto contenido en un nodo texto
     private StringBuilder buffer = new StringBuilder();
 
@@ -27,6 +29,8 @@ public class Departamentos extends DefaultHandler {
                 break;
             case "departamento":
                 depAux = new Departamento();
+                id = Integer.parseInt(attributes.getValue("id"));  // Obtenemos el ID del XML
+                depAux.setId(id);  // Establecemos el ID en el Departamento
                 break;
             case "nombre", "localidad":
                 //cuando se llega al cierre de la etiqueta se vacia el buffer

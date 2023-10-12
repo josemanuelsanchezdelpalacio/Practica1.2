@@ -1,11 +1,17 @@
 package javaBeans;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Departamento {
 
     private Integer id;
     private String nombre, localidad;
+    private List<Empleado> empleados;
 
-    public Departamento() {}
+    public Departamento() {
+        empleados = new ArrayList<>();
+    }
 
     public Integer getId() {
         return id;
@@ -31,12 +37,21 @@ public class Departamento {
         this.localidad = localidad;
     }
 
+    public List<Empleado> getEmpleados() {
+        return empleados;
+    }
+
+    public void agregarEmpleado(Empleado empleado) {
+        empleados.add(empleado);
+    }
+
     @Override
     public String toString() {
         return "Departamento{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", localidad='" + localidad + '\'' +
+                ", empleados=" + empleados +
                 '}';
     }
 }

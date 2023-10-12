@@ -16,7 +16,7 @@ import static libs.FicheroEscribible.ficheroEscribible;
 
 public class LeerDepartamentos {
 
-    public static void leer() {
+    public static ArrayList<Departamento> leer() {
         Path p = Path.of(Leer.pedirCadena("Introduce ruta fichero: "));
         ArrayList<Departamento> departamentosXML = new ArrayList<>();
 
@@ -34,6 +34,6 @@ public class LeerDepartamentos {
                 throw new RuntimeException(e);
             }
         }
+        return departamentosXML;
     }
-
 }
