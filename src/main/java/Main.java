@@ -11,7 +11,7 @@ public class Main {
             System.out.println("2. Leer XML departamento");
             System.out.println("3. Asignar empleado a departamento");
             System.out.println("4. Cargar empleados JSON");
-            System.out.println("5. Generar XML y JSON");
+            System.out.println("5. Guardar datos empresa en XML y JSON");
 
             opcion = Leer.pedirEntero("Introduce una opción: ");
 
@@ -21,7 +21,7 @@ public class Main {
                 case 2 -> {LeerDepartamentos.leer();}
                 case 3 -> {AsignarEmpleados.asignar();}
                 case 4 -> {CargarEmpleadosJSON.cargar();}
-                case 5 -> {GenerarXMLyJSON.generarJSON(); GenerarXMLyJSON.generarXML();}
+                case 5 -> {GenerarXMLyJSON.generarArchivoXML(); GenerarXMLyJSON.generarArchivoJSON();}
                 default -> {System.out.println("La opcion seleccionada no existe");}
             }
         } while (!salir);

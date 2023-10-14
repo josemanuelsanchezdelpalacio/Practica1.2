@@ -1,57 +1,66 @@
 package code;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import javaBeans.Empleado;
 
-import java.io.FileReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.MalformedInputException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+
+import static code.EscribirCSV.listaEmpleados;
+import static libs.FicheroEscribible.ficheroEscribible;
 
 public class CargarEmpleadosJSON {
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
 
     public static void cargar() {
-        ArrayList<Empleado> nuevosEmpleados = new ArrayList<>();
-        Path p = Path.of("src/main/resources/nuevosEmpleados.json");  // Update with the correct file path
+        Path pJson = Path.of("src/main/resources/nuevosEmpleados.json");
 
-        try (FileReader reader = new FileReader(p.toFile())) {
+        Empleado[] nuevosEmpleados;
+
+        try {
+            String txtJson = Files.readString(pJson, StandardCharsets.UTF_8);
+
             Gson gson = new Gson();
-            JsonParser parser = new JsonParser();
-            JsonArray jsonArray = parser.parse(reader).getAsJsonArray();
+            nuevosEmpleados = gson.fromJson(txtJson, Empleado[].class);
 
-            for (JsonElement jsonElement : jsonArray) {
-                JsonObject empleadoJson = jsonElement.getAsJsonObject();
-                String nombre = empleadoJson.get("nombre").getAsString();
-                double sueldo = empleadoJson.get("sueldo").getAsDouble();
-                int año = empleadoJson.get("año").getAsInt();
-                int idDep = empleadoJson.get("idDep").getAsInt();
+            for (Empleado nuevoEmpleado : nuevosEmpleados) {
+                String strAñoNacimiento = String.valueOf(nuevoEmpleado.getAñoNacimiento());
+                Date fechaNacimiento = null;
 
-                // Convierte el año de representación de cadena a un objeto Date
-                Date fechaAño = dateFormat.parse(String.valueOf(año));
+                if (strAñoNacimiento != null && !strAñoNacimiento.equals("null")) {
+                    try {
+                        fechaNacimiento = new SimpleDateFormat("yyyy").parse(strAñoNacimiento);
+                    } catch (ParseException e) {
+                        System.err.println("Error al parsear la fecha de nacimiento: " + e.getMessage());
+                        return;
+                    }
+                }
 
-                // Assign the current date as the start date (antigüedad)
-                Date currentDate = new Date();
-
-                Empleado empleado = new Empleado(nombre, sueldo, fechaAño, currentDate, idDep);
-                nuevosEmpleados.add(empleado);
+                Empleado empleado = new Empleado(
+                        nuevoEmpleado.getNombre(),
+                        nuevoEmpleado.getSueldo(),
+                        fechaNacimiento,
+                        new Date(),
+                        nuevoEmpleado.getIdDepartamento()
+                );
+                EscribirCSV.listaEmpleados.add(empleado);
             }
+        } catch (FileNotFoundException | NoSuchFileException e) {
+            System.err.println("El archivo no existe: " + e.getMessage());
         } catch (IOException e) {
-            System.err.println("Error al leer el archivo de nuevos empleados: " + e.getMessage());
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Imprime los nuevos empleados cargados
-        for (Empleado empleado : nuevosEmpleados) {
-            System.out.println(empleado);
+            System.err.println("Error al leer el archivo JSON: " + e.getMessage());
         }
     }
 }
