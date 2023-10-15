@@ -13,8 +13,11 @@ import java.util.ArrayList;
 
 import static libs.FicheroEscribible.ficheroEscribible;
 
+/** A partir del archivo "departamentos.xml" que se adjunta, lea el fichero y cree los objetos correspondientes.**/
+
 public class LeerDepartamentos {
 
+    //aqui guardamos los departamentos que leemos del XML
     static ArrayList<Departamento> departamentos = new ArrayList<>();
 
     public static void leer() {
@@ -24,6 +27,7 @@ public class LeerDepartamentos {
             SAXParserFactory saxPF = SAXParserFactory.newInstance();
             DepartamentosHandler depHandler = new DepartamentosHandler();
             try {
+                //creo el parseador de SAX para poder leer el "departamentos.xml" a traves del objeto Handler
                 SAXParser parser = saxPF.newSAXParser();
                 parser.parse(p.toFile(), depHandler);
                 departamentos = depHandler.getDepartamentos();
@@ -33,7 +37,7 @@ public class LeerDepartamentos {
             } catch (SAXException e) {
                 System.err.println("La clase no está modificada correctamente para aplicar el contexto: " + e.getMessage());
             } catch (IOException e) {
-                System.err.println("Error al crear el archivo: " + e.getMessage());
+                System.err.println("Error al leer el archivo: " + e.getMessage());
             } catch (ParserConfigurationException e) {
                 System.err.println("Error al parsear el archivo: " + e.getMessage());
             }

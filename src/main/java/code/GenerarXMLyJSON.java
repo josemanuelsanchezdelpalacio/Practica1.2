@@ -16,27 +16,27 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenerarXMLyJSON {
+import static code.EscribirCSV.listaEmpleados;
+import static code.LeerDepartamentos.departamentos;
 
-    private static List<Empleado> empleados = EscribirCSV.listaEmpleados;
-    private static List<Departamento> departamentos = LeerDepartamentos.departamentos;
+public class GenerarXMLyJSON {
 
     public static void generarArchivoXML() {
         try {
             Path p = Path.of("target/empresa.xml");
 
-            // Configurar el marshaller
+            //creo el objeto Marshaller para pasar de objetos a XML
             JAXBContext contexto = JAXBContext.newInstance(Departamentos.class, Departamento.class, Empleado.class);
             Marshaller marshaller = contexto.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-            // Crear objeto Departamentos y asignar los datos de los ArrayLists
+            //creo un objeto Departamentos para guardar la informacion en el arraylist "departamentos"
             Departamentos departamentosObj = new Departamentos();
-            departamentosObj.setDepartamentos(LeerDepartamentos.departamentos);
+            departamentosObj.setDepartamentos(departamentos);
 
-            // Marshalling a un archivo
+            //y lo guardamos en en el archivo "empresa.xml"
             marshaller.marshal(departamentosObj, p.toFile());
-            System.out.println("Archivo XML generado con éxito: " + p);
+            System.out.println("Archivo XML creado correctamente: " + p);
         } catch (Exception e) {
             System.err.println("Error al generar el archivo XML: " + e.getMessage());
         }
@@ -45,16 +45,20 @@ public class GenerarXMLyJSON {
     public static void generarArchivoJSON() {
         Path p = Path.of("target/empresa.json");
 
-        List<Object> data = new ArrayList<>();
-        data.addAll(empleados);
-        data.addAll(departamentos);
+        List<Object> listaObjetos = new ArrayList<>();
+        listaObjetos.addAll(listaEmpleados);
+        listaObjetos.addAll(departamentos);
 
+        //creo el objeto GSON para pasar de objeto a JSON
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String jsonData = gson.toJson(data);
+
+        //guardamos la lista de objetos
+        String jsonInfo = gson.toJson(listaObjetos);
 
         try {
-            Files.writeString(p, jsonData);
-            System.out.println("Archivo JSON generado con éxito: " + p);
+            //y escribo la informacion en el JSON
+            Files.writeString(p, jsonInfo);
+            System.out.println("Archivo JSON crado correctamente: " + p);
         } catch (IOException e) {
             System.err.println("Error al generar el archivo JSON: " + e.getMessage());
         }

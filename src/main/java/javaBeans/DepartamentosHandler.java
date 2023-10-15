@@ -11,26 +11,25 @@ public class DepartamentosHandler extends DefaultHandler {
     private ArrayList<Departamento> departamentos = new ArrayList<>();
     private Departamento depAux;
 
+    //uso esta variable para parsear el ID desde el XML
     private Integer id;
 
     //para almacenar el texto contenido en un nodo texto
     private StringBuilder buffer = new StringBuilder();
 
-    //para que nos devuelva un array de coches
+    //para que nos devuelva un array del objeto Departamento
     public ArrayList<Departamento> getDepartamentos() {
         return departamentos;
     }
 
-    //qName = nombre etiqueta
-
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         switch (qName){
-            case "departamentos":
-                break;
             case "departamento":
                 depAux = new Departamento();
-                id = Integer.parseInt(attributes.getValue("id"));  // Obtenemos el ID del XML
-                depAux.setId(id);  // Establecemos el ID en el Departamento
+                //obtengo el ID del XML
+                id = Integer.parseInt(attributes.getValue("id"));
+                //se establece el ID en el Departamento
+                depAux.setId(id);
                 break;
             case "nombre", "localidad":
                 //cuando se llega al cierre de la etiqueta se vacia el buffer
@@ -41,8 +40,6 @@ public class DepartamentosHandler extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         switch (qName){
-            case "departamentos":
-                break;
             case "departamento":
                 departamentos.add(depAux);
                 break;

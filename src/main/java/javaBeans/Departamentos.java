@@ -27,4 +27,5 @@ public class Departamentos {
     public void setDepartamentos(List<Departamento> departamentos) {
         this.departamentos = departamentos;
     }
+
 }
