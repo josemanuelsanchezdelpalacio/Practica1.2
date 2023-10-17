@@ -5,21 +5,19 @@ import com.google.gson.GsonBuilder;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.PropertyException;
 import javaBeans.Departamento;
+import javaBeans.Departamentos;
 import javaBeans.Empleado;
-import javaBeans.Empresa;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 
 import static code.EscribirCSV.listaEmpleados;
 import static code.LeerDepartamentos.departamentos;
-
-/**Genere un archivo xml y otro json con toda la información de la empresa.**/
-import java.nio.file.Paths;
 
 public class GenerarXMLyJSON {
 
@@ -27,19 +25,17 @@ public class GenerarXMLyJSON {
         try {
             Path p = Path.of("target/empresa.xml");
 
-            // Crear el contexto JAXB para la clase Empresa
-            JAXBContext contexto = JAXBContext.newInstance(Empresa.class);
+            //creo el objeto Marshaller para pasar de objetos a XML
+            JAXBContext contexto = JAXBContext.newInstance(Departamentos.class, Departamento.class, Empleado.class);
             Marshaller marshaller = contexto.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-            // Crear una instancia de Empresa con datos existentes
-            Empresa empresa = new Empresa();
-            // Asignar los empleados y departamentos existentes
-            empresa.setEmpleados(listaEmpleados);
-            empresa.setDepartamentos(departamentos);
+            //creo un objeto Departamentos para guardar la informacion en el arraylist "departamentos"
+            Departamentos departamentosObj = new Departamentos();
+            departamentosObj.setDepartamentos(departamentos);
 
-            // Guardar en el archivo "empresa.xml"
-            marshaller.marshal(empresa, p.toFile());
+            //y lo guardamos en en el archivo "empresa.xml"
+            marshaller.marshal(departamentosObj, p.toFile());
             System.out.println("Archivo XML creado correctamente: " + p);
         } catch (Exception e) {
             System.err.println("Error al generar el archivo XML: " + e.getMessage());
@@ -49,22 +45,20 @@ public class GenerarXMLyJSON {
     public static void generarArchivoJSON() {
         Path p = Path.of("target/empresa.json");
 
-        // Crear una instancia de Empresa con datos existentes
-        Empresa empresa = new Empresa();
-        // Asignar los empleados y departamentos existentes
-        empresa.setEmpleados(listaEmpleados);
-        empresa.setDepartamentos(departamentos);
+        List<Object> listaObjetos = new ArrayList<>();
+        listaObjetos.addAll(listaEmpleados);
+        listaObjetos.addAll(departamentos);
 
-        // Crear el objeto Gson para pasar de objeto a JSON
+        //creo el objeto GSON para pasar de objeto a JSON
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        // Guardar la información en el JSON
-        String jsonInfo = gson.toJson(empresa);
+        //guardamos la lista de objetos
+        String jsonInfo = gson.toJson(listaObjetos);
 
         try {
-            // Escribir la información en el JSON
+            //y escribo la informacion en el JSON
             Files.writeString(p, jsonInfo);
-            System.out.println("Archivo JSON creado correctamente: " + p);
+            System.out.println("Archivo JSON crado correctamente: " + p);
         } catch (IOException e) {
             System.err.println("Error al generar el archivo JSON: " + e.getMessage());
         }

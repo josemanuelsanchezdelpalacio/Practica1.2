@@ -11,6 +11,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**Cargue los nuevos empleados a partir de los datos del fichero "nuevosEmpleados.json",
+ * asignándoles como fecha de antigüedad la fecha del sistema.**/
 public class CargarEmpleadosJSON {
 
     public static void cargar() {
