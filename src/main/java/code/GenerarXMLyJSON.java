@@ -3,22 +3,18 @@ package code;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import javaBeans.Departamento;
 import javaBeans.Departamentos;
 import javaBeans.Empleado;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
-import static code.EscribirCSV.listaEmpleados;
 import static code.LeerDepartamentos.departamentos;
 
+/**Genere un archivo xml y otro json con toda la información de la empresa.**/
 public class GenerarXMLyJSON {
 
     public static void generarArchivoXML() {
@@ -43,20 +39,17 @@ public class GenerarXMLyJSON {
     }
 
     public static void generarArchivoJSON() {
-        Path p = Path.of("target/empresa.json");
 
-        List<Object> listaObjetos = new ArrayList<>();
-        listaObjetos.addAll(listaEmpleados);
-        listaObjetos.addAll(departamentos);
+        Path p = Path.of("target/empresa.json");
 
         //creo el objeto GSON para pasar de objeto a JSON
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        //guardamos la lista de objetos
-        String jsonInfo = gson.toJson(listaObjetos);
+        //guardamos los datos en un string a traves de la lista de departamentos
+        String jsonInfo = gson.toJson(departamentos);
 
         try {
-            //y escribo la informacion en el JSON
+            //y lo escribo en el JSON
             Files.writeString(p, jsonInfo);
             System.out.println("Archivo JSON crado correctamente: " + p);
         } catch (IOException e) {

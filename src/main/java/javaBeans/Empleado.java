@@ -17,6 +17,7 @@ public class Empleado {
         this.antiguedad = antiguedad;
     }
 
+    //para cuando se asigne un departamento al usuario
     public Empleado(String nombre, Double sueldo, Date añoNacimiento, Date antiguedad, int idDepartamento) {
         this(nombre, sueldo, añoNacimiento, antiguedad);
         this.idDepartamento = idDepartamento;
