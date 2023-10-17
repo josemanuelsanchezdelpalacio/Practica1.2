@@ -22,6 +22,8 @@ public class Empleado {
         this.idDepartamento = idDepartamento;
     }
 
+    public Empleado() {}
+
     public String getNombre() {
         return nombre;
     }

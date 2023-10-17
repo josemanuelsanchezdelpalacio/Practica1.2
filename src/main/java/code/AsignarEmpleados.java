@@ -2,67 +2,54 @@ package code;
 
 import javaBeans.Departamento;
 import javaBeans.Empleado;
-
-import java.util.Scanner;
+import libs.Leer;
 
 /**Asigne todos los empleados creados a un departamento preguntando al usuario a qué departamento
  * pertenece y dándole a elegir entre los nombres de departamentos cargados.**/
 
 public class AsignarEmpleados {
 
-    private static Scanner scanner = new Scanner(System.in);
-
     public static void asignar() {
-        //pido el nombre del empleado
-        System.out.print("Escribe el nombre del empleado al que quieres asignar un departamento: ");
-        String nombreEmpleado = scanner.nextLine();
+        String nombreEmpleado = Leer.pedirCadena("Escribe el nombre del empleado al que quieres asignar un departamento: ");
 
         boolean empleadoEncontrado = false;
-        //y compruebo que ese nombre del empleado coincida con el nombre del empleado guardado previamente en el array "listaEmpleados"
+        //itero para comprobar que el nombre del empleado existe en el CSV
         for (Empleado empleado : EscribirCSV.listaEmpleados) {
             if (empleado.getNombre().equalsIgnoreCase(nombreEmpleado)) {
-                System.out.println("Asignar departamento para el empleado: " + empleado.getNombre());
-
-                //muestro los departamentos
-                mostrarDepartamentos();
-                //y pido un ID
-                System.out.print("Elige un departamento por su ID: ");
-                int id;
-                try {
-                    id = Integer.parseInt(scanner.nextLine());
-                } catch (NumberFormatException e) {
-                    System.err.println("ID debe ser un número válido.");
-                    return;
-                }
-
-                //si el ID existe se lo agregamos al empleado
-                boolean departamentoEncontrado = false;
-                for (Departamento departamento : LeerDepartamentos.departamentos) {
-                    if (departamento.getId() == id) {
-                        departamento.agregarEmpleado(empleado);
-                        departamentoEncontrado = true;
-                        empleadoEncontrado = true;
-                        System.out.println("Departamento agreado al empleado correctamente");
-                        break;
-                    }
-                }
-
-                if (!departamentoEncontrado) {
-                    System.out.println("No se ha encontrado el departamento con el ID especificado.");
-                }
+                empleadoEncontrado = true;
+                break;
             }
         }
-
         if (!empleadoEncontrado) {
-            System.out.println("No se ha encontrado un empleado con el nombre especificado.");
+            System.out.println("No existe un empleado con ese nombre");
+            return;
         }
-    }
 
-    //metodo para mostrar por pantalla los departamentos y su ID
-    private static void mostrarDepartamentos() {
-        System.out.println("Departamentos disponibles:");
+        //si el empleado fue encontrado en el CSV muestro los departamentos y pido el ID del departamento
+        System.out.println("Asignar departamento para el empleado: " + nombreEmpleado);
+        LeerDepartamentos.leer();
+
+        System.out.print("Elige un departamento por su ID: ");
+        int id;
+        try {
+            id = Integer.parseInt(String.valueOf(Leer.pedirEntero("Introduce el ID de uno de los departamentos: ")));
+        } catch (NumberFormatException e) {
+            System.err.println("El ID debe ser un número valido.");
+            return;
+        }
+
+        //busco el departamento para asignarselo al empleado
+        boolean departamentoEncontrado = false;
         for (Departamento departamento : LeerDepartamentos.departamentos) {
-            System.out.println(departamento.getId() + " - " + departamento.getNombre());
+            if (departamento.getId() == id) {
+                departamento.agregarEmpleado(new Empleado());
+                departamentoEncontrado = true;
+                System.out.println("Departamento agregado al empleado correctamente");
+                break;
+            }
+        }
+        if (!departamentoEncontrado) {
+            System.out.println("No se ha encontrado el departamento con el ID especificado.");
         }
     }
 }

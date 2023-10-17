@@ -24,6 +24,8 @@ public class DepartamentosHandler extends DefaultHandler {
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         switch (qName){
+            case "departamentos":
+                break;
             case "departamento":
                 depAux = new Departamento();
                 //obtengo el ID del XML
@@ -40,6 +42,8 @@ public class DepartamentosHandler extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         switch (qName){
+            case "departamentos":
+                break;
             case "departamento":
                 departamentos.add(depAux);
                 break;

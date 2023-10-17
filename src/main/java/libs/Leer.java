@@ -3,6 +3,9 @@ package libs;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Leer {
 
@@ -121,5 +124,18 @@ public class Leer {
         }
 
         return dato;
+    }
+
+    public static Date pedirFecha(String mensaje, String formato) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(formato);
+        while (true) {
+            try {
+                String fechaStr = Leer.pedirCadena(mensaje);
+                return dateFormat.parse(fechaStr);
+            } catch (ParseException e) {
+                System.err.println("Error al parsear la fecha: " + e.getMessage());
+                System.out.println("Introduce la fecha en el formato indicado (" + formato + ").");
+            }
+        }
     }
 }

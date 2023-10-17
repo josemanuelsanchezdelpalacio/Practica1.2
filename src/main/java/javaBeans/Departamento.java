@@ -1,5 +1,7 @@
 package javaBeans;
 
+import jakarta.xml.bind.annotation.XmlElement;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +39,7 @@ public class Departamento {
         this.localidad = localidad;
     }
 
+    @XmlElement(name = "empleado")
     public List<Empleado> getEmpleados() {
         return empleados;
     }
