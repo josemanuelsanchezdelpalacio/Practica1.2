@@ -59,15 +59,14 @@ public class EscribirCSV {
 
     //metodo para guardar los datos del empleado en el CSV
     public static void guardarEmpleadoEnArchivo(Empleado empleado, Path p) {
-        SimpleDateFormat dateFormatNacimiento = new SimpleDateFormat("dd-MM-yyyy");
-        SimpleDateFormat dateFormatAntiguedad = new SimpleDateFormat("yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(p.toFile(), true))) {
             if (empleado != null) {
                 writer.write(empleado.getNombre() + "," +
                         empleado.getSueldo() + "," +
-                        dateFormatNacimiento.format(empleado.getAñoNacimiento()) + "," +
-                        dateFormatAntiguedad.format(empleado.getAntiguedad()) + "\n");
+                        dateFormat.format(empleado.getAñoNacimiento()) + "," +
+                        dateFormat.format(empleado.getAntiguedad()) + "\n");
             } else {
                 System.err.println("No se pudo guardar el empleado debido a errores en los datos.");
             }
