@@ -7,7 +7,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -26,7 +25,10 @@ public class EscribirCSV {
 
     //metodo para añadir los empleados al CSV y al arrayList "listaEmpleados"
     public static void pedirEmpleados() {
-        String respuesta;
+
+        Path p = Path.of("target/empleados.csv");
+
+        String respuesta = "";
         do {
             String nombre = Leer.pedirCadena("Nombre del empleado: ");
 
@@ -41,12 +43,11 @@ public class EscribirCSV {
             Date añoNacimiento = null;
             añoNacimiento = pedirFecha("Fecha de nacimiento del empledo (dd-MM-yyyy): ", "dd-MM-yyyy");
 
-            Date antiguedad = null;
-            antiguedad = pedirFecha("Antiguedad del empleado (dd-MM-yyyy): ", "dd-MM-yyyy");
+            Date antiguedad = new Date(); //fecha actual
 
             Empleado empleado = new Empleado (nombre, sueldo, añoNacimiento, antiguedad);
             if (empleado != null) {
-                guardarEmpleadoEnArchivo(empleado, Path.of("target/empleados.csv"));
+                guardarEmpleadoEnArchivo(empleado, p);
                 listaEmpleados.add(empleado);
             } else {
                 System.out.println("Ninguno de los datos puede estar vacío.");

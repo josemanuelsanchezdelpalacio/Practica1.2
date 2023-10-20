@@ -9,11 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @XmlRootElement(name = "empresa")
-@XmlType(propOrder = {"empleados", "departamentos"})
 public class Empresa {
-
-    private List<Empleado> empleados;
-    private List<Departamento> departamentos;
+    private ArrayList<Empleado> empleados;
+    private ArrayList<Departamento> departamentos;
 
     public Empresa() {
         empleados = new ArrayList<>();
@@ -22,29 +20,21 @@ public class Empresa {
 
     @XmlElementWrapper(name = "empleados")
     @XmlElement(name = "empleado")
-    public List<Empleado> getEmpleados() {
+    public ArrayList<Empleado> getEmpleados() {
         return empleados;
     }
 
-    public void setEmpleados(List<Empleado> empleados) {
+    public void setEmpleados(ArrayList<Empleado> empleados) {
         this.empleados = empleados;
     }
 
     @XmlElementWrapper(name = "departamentos")
     @XmlElement(name = "departamento")
-    public List<Departamento> getDepartamentos() {
+    public ArrayList<Departamento> getDepartamentos() {
         return departamentos;
     }
 
-    public void setDepartamentos(List<Departamento> departamentos) {
+    public void setDepartamentos(ArrayList<Departamento> departamentos) {
         this.departamentos = departamentos;
-    }
-
-    @Override
-    public String toString() {
-        return "Empresa{" +
-                " empleados=" + empleados +
-                ", departamentos=" + departamentos +
-                '}';
     }
 }

@@ -21,16 +21,17 @@ public class GenerarXMLyJSON {
         try {
             Path p = Path.of("target/empresa.xml");
 
+            //creo instancia de Empresa con datos existentes
+            Empresa empresa = new Empresa();
+
+            //obtengo la lista de empleados y departamentos
+            empresa.setEmpleados(EscribirCSV.listaEmpleados);
+            empresa.setDepartamentos(LeerDepartamentos.departamentos);
+
             //creo contexto JAXB para la clase Empresa
             JAXBContext contexto = JAXBContext.newInstance(Empresa.class);
             Marshaller marshaller = contexto.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-            //creo instancia de Empresa con datos existentes
-            Empresa empresa = new Empresa();
-            //asigno los empleados y departamentos existentes
-            empresa.setEmpleados(listaEmpleados);
-            empresa.setDepartamentos(departamentos);
 
             //guardo en el archivo empresa.xml
             marshaller.marshal(empresa, p.toFile());
@@ -64,3 +65,4 @@ public class GenerarXMLyJSON {
         }
     }
 }
+
