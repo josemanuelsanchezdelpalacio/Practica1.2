@@ -4,6 +4,12 @@ import javaBeans.Departamento;
 import javaBeans.Empleado;
 import libs.Leer;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
+
 /**Asigne todos los empleados creados a un departamento preguntando al usuario a qué departamento
  * pertenece y dándole a elegir entre los nombres de departamentos cargados.**/
 
@@ -12,17 +18,36 @@ public class AsignarEmpleados {
     public static void asignar() {
         String nombreEmpleado = Leer.pedirCadena("Escribe el nombre del empleado al que quieres asignar un departamento: ");
 
-        boolean empleadoEncontrado = false;
-        //itero para comprobar que el nombre del empleado existe en el CSV
-        for (Empleado empleado : EscribirCSV.listaEmpleados) {
-            if (empleado.getNombre().equalsIgnoreCase(nombreEmpleado)) {
-                empleadoEncontrado = true;
-                break;
+        BufferedReader bufferLectura = null;
+        try {
+            // Abrir el .csv en buffer de lectura
+            bufferLectura = new BufferedReader(new FileReader("target/empleados.csv"));
+
+            // Leer una linea del archivo
+            String linea = bufferLectura.readLine();
+
+            while (linea != null) {
+                // Sepapar la linea leída con el separador definido previamente
+                String[] campos = linea.split(",");
+
+                System.out.println(Arrays.toString(campos));
+
+                // Volver a leer otra línea del fichero
+                linea = bufferLectura.readLine();
+
             }
-        }
-        if (!empleadoEncontrado) {
-            System.out.println("No existe un empleado con ese nombre");
-            return;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            // Cierro el buffer de lectura
+            if (bufferLectura != null) {
+                try {
+                    bufferLectura.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         //si el empleado fue encontrado en el CSV muestro los departamentos y pido el ID del departamento
