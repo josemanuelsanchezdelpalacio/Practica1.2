@@ -7,10 +7,7 @@ import libs.Leer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 
 import static code.EscribirCSV.listaEmpleados;
 
@@ -47,7 +44,8 @@ public class AsignarEmpleados {
 
         for (Departamento departamento : LeerDepartamentos.departamentos) {
             if (departamento.getId() == id) {
-                departamento.agregarEmpleado(empleadoEncontrado); // Asigno al empleado al departamento
+                //asigno el departamento al empleado
+                departamento.agregarEmpleado(empleadoEncontrado);
                 departamentoEncontrado = departamento;
                 System.out.println("Departamento agregado al empleado correctamente");
                 break;
@@ -61,33 +59,32 @@ public class AsignarEmpleados {
         //agrego el empleado de nuevo a la lista de empleados
         listaEmpleados.add(empleadoEncontrado);
     }
-    public static Empleado buscarEmpleadoPorNombre(String nombreEmpleado){
+
+    //metodo para comprobar si existe el empleado dentro del CSV
+    public static Empleado buscarEmpleadoPorNombre(String nombreEmpleado) {
+        List<String> lineas = new ArrayList<>();
         try (BufferedReader bufferLectura = new BufferedReader(new FileReader("target/empleados.csv"))) {
-            //leo una linea del "empleados.csv"
             String linea = bufferLectura.readLine();
             while (linea != null) {
-                //quitamos las comas del .csv
-                String[] campos = linea.split(",");
-
-                if (campos.length >= 1 && campos[0].equalsIgnoreCase(nombreEmpleado)) {
-                    System.out.println("Empleado encontrado en el archivo CSV: " + Arrays.toString(campos));
-                    //compruebo los campos y lo devuelvo al objeto
-                    if (campos.length >= 4) {
-                        double sueldo = Double.parseDouble(campos[1]);
-                        Date añoNacimiento = new SimpleDateFormat("dd-MM-yyyy").parse(campos[2]);
-                        Date antiguedad = new SimpleDateFormat("dd-MM-yyyy").parse(campos[3]);
-                        return new Empleado(nombreEmpleado, sueldo, añoNacimiento, antiguedad);
-                    }
-                }
-
-                //para leer la siguiente linea
+                lineas.add(linea);
                 linea = bufferLectura.readLine();
-
             }
         } catch (IOException e) {
             System.err.println("Error al leer el archivo CSV: " + e.getMessage());
-        } catch (ParseException e) {
-            System.err.println("Error al parsear un dato: " + e.getMessage());
+        }
+
+        for (String linea : lineas) {
+            String[] campos = linea.split(",");
+            if (campos.length >= 1 && campos[0].equalsIgnoreCase(nombreEmpleado)) {
+                System.out.println("Empleado encontrado en el archivo CSV: " + Arrays.toString(campos));
+
+                if (campos.length >= 4) {
+                    double sueldo = Leer.pedirDouble("Introduce el sueldo: ");
+                    Date añoNacimiento = Leer.pedirFecha("Introduce la fecha de nacimiento (dd-MM-yyyy): ", "dd-MM-yyyy");
+                    Date antiguedad = Leer.pedirFecha("Introduce la fecha de antiguedad (dd-MM-yyyy): ", "dd-MM-yyyy");
+                    return new Empleado(nombreEmpleado, sueldo, añoNacimiento, antiguedad);
+                }
+            }
         }
         return null;
     }

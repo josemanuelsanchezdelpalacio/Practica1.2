@@ -6,13 +6,16 @@ import libs.Leer;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import java.util.Date;
 
-import static libs.Leer.pedirFecha;
+import static libs.FicheroEscribible.ficheroEscribible;
+import static libs.Leer.*;
 
 /**Pida al usuario los datos de una serie de empleados y que los guarde en un fichero empleados.csv.
  * El usuario introducirá datos de empleados hasta que indique que no quiere añadir ninguno más.
@@ -25,54 +28,60 @@ public class EscribirCSV {
 
     //metodo para añadir los empleados al CSV y al arrayList "listaEmpleados"
     public static void pedirEmpleados() {
+        String entrada = "";
+        Empleado empAux;
 
-        Path p = Path.of("target/empleados.csv");
+        String nombre;
+        Double sueldo;
+        Date añoNacimiento, antiguedad;
 
-        String respuesta = "";
         do {
-            String nombre = Leer.pedirCadena("Nombre del empleado: ");
+            empAux = new Empleado();
 
-            double sueldo = 0;
-            try {
-                sueldo = Leer.pedirDouble("Sueldo del empleado: ");
-            } catch (NumberFormatException e) {
-                System.err.println("Sueldo debe ser un número válido.");
-            }
+            nombre = pedirCadena("Introduce el nombre del nuevo empleado o fin para terminar: ");
+            empAux.setNombre(nombre);
 
-            //pedirFecha es un metodo creado en libs.Leer para parsear cualquier tipo de formato de fecha
-            Date añoNacimiento = null;
-            añoNacimiento = pedirFecha("Fecha de nacimiento del empledo (dd-MM-yyyy): ", "dd-MM-yyyy");
+            sueldo = pedirDouble("Introduce el sueldo: ");
+            empAux.setSueldo(sueldo);
 
-            Date antiguedad = new Date(); //fecha actual
+            añoNacimiento = pedirFecha("Introduce el año de nacimiento (yyyy): ", "yyyy");
+            empAux.setAñoNacimiento(añoNacimiento);
 
-            Empleado empleado = new Empleado (nombre, sueldo, añoNacimiento, antiguedad);
-            if (empleado != null) {
-                guardarEmpleadoEnArchivo(empleado, p);
-                listaEmpleados.add(empleado);
-            } else {
-                System.out.println("Ninguno de los datos puede estar vacío.");
-            }
-            respuesta = Leer.pedirCadena("¿Quieres añadir otro empleado? (si/no): ").toLowerCase();
-        } while (respuesta.equals("si"));
+            antiguedad = pedirFecha("Introduce la fecha en que comenzó a trabajar en la empresa (dd-MM-yyyy): ", "dd-MM-yyyy");
+            empAux.setAntiguedad(antiguedad);
 
-        System.out.println("Datos de empleados guardados en empleados.csv");
+            listaEmpleados.add(empAux);
+            entrada = Leer.pedirCadena("¿Quieres añadir otro empleado? (si/no): ").toLowerCase();
+        } while (entrada.equals("si"));
+        guardarEmpleadoEnArchivo(listaEmpleados);
     }
 
     //metodo para guardar los datos del empleado en el CSV
-    public static void guardarEmpleadoEnArchivo(Empleado empleado, Path p) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    private static void guardarEmpleadoEnArchivo(ArrayList<Empleado> empleados) {
+        Path p = Path.of("target/empleados.csv");
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(p.toFile(), true))) {
-            if (empleado != null) {
-                writer.write(empleado.getNombre() + "," +
-                        empleado.getSueldo() + "," +
-                        dateFormat.format(empleado.getAñoNacimiento()) + "," +
-                        dateFormat.format(empleado.getAntiguedad()) + "\n");
-            } else {
-                System.err.println("No se pudo guardar el empleado debido a errores en los datos.");
+        String linea = "";
+        StringBuilder textoCSV = new StringBuilder();
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); // Formato de fecha
+
+        for (Empleado e : empleados) {
+            // Formatear las fechas como cadenas en el formato "dd-MM-yyyy"
+            String fechaNacimiento = dateFormat.format(e.getAñoNacimiento());
+            String fechaAntiguedad = dateFormat.format(e.getAntiguedad());
+
+            linea = e.getNombre() + "," + e.getSueldo() + "," + fechaNacimiento + "," + fechaAntiguedad;
+            textoCSV.append(linea).append('\n');
+        }
+
+        if (ficheroEscribible(p)) {
+            try {
+                Files.writeString(p, textoCSV);
+            } catch (IOException e) {
+                System.out.println("Ha habido un error durante la escritura");
+                ;
             }
-        } catch (IOException e) {
-            System.err.println("Error al escribir en el archivo CSV: " + e.getMessage());
+        } else {
+            System.out.println("El fichero no se puede crear");
         }
     }
 }

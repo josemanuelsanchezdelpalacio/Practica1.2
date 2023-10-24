@@ -2,8 +2,6 @@ package code;
 
 import javaBeans.Departamento;
 import javaBeans.DepartamentosHandler;
-import javaBeans.Empleado;
-import libs.Leer;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -13,7 +11,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import static libs.FicheroEscribible.ficheroEscribible;
+import static libs.FicheroEscribible.ficheroLegible;
 
 /** A partir del archivo "departamentos.xml" que se adjunta, lea el fichero y cree los objetos correspondientes.**/
 
@@ -25,7 +23,7 @@ public class LeerDepartamentos {
     public static void leer() {
         Path p = Path.of("src/main/resources/departamentos.xml");
 
-        if (ficheroEscribible(p)) {
+        if (ficheroLegible(p)) {
             SAXParserFactory saxPF = SAXParserFactory.newInstance();
             try {
                 //creo el objeto SAXParser para leer el XML de departamentos a través del Handler
