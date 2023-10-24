@@ -38,7 +38,7 @@ public class EscribirCSV {
         do {
             empAux = new Empleado();
 
-            nombre = pedirCadena("Introduce el nombre del nuevo empleado o fin para terminar: ");
+            nombre = pedirCadena("Introduce el nombre del nuevo empleado: ");
             empAux.setNombre(nombre);
 
             sueldo = pedirDouble("Introduce el sueldo: ");
@@ -54,6 +54,7 @@ public class EscribirCSV {
             entrada = Leer.pedirCadena("¿Quieres añadir otro empleado? (si/no): ").toLowerCase();
         } while (entrada.equals("si"));
         guardarEmpleadoEnArchivo(listaEmpleados);
+        System.out.println("Datos de los empleados añadidos al .csv");
     }
 
     //metodo para guardar los datos del empleado en el CSV
@@ -65,7 +66,6 @@ public class EscribirCSV {
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); // Formato de fecha
 
         for (Empleado e : empleados) {
-            // Formatear las fechas como cadenas en el formato "dd-MM-yyyy"
             String fechaNacimiento = dateFormat.format(e.getAñoNacimiento());
             String fechaAntiguedad = dateFormat.format(e.getAntiguedad());
 
@@ -74,11 +74,10 @@ public class EscribirCSV {
         }
 
         if (ficheroEscribible(p)) {
-            try {
-                Files.writeString(p, textoCSV);
+            try (FileWriter writer = new FileWriter(p.toString(), true); BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
+                bufferedWriter.write(textoCSV.toString());
             } catch (IOException e) {
                 System.out.println("Ha habido un error durante la escritura");
-                ;
             }
         } else {
             System.out.println("El fichero no se puede crear");

@@ -9,10 +9,8 @@ public class FicheroEscribible {
     public static boolean ficheroEscribible(Path p){
         boolean ficheroOK = false;
         if(Files.exists(p)){
-            if(p.toString().endsWith(".xml")){
+            if (Files.isWritable(p)) {
                 ficheroOK = true;
-            }else{
-                System.out.println("No es un archivo XML");
             }
         }else {
             try {
