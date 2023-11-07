@@ -3,9 +3,12 @@ package code;
 import com.google.gson.Gson;
 import javaBeans.Empleado;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,39 +26,44 @@ public class CargarEmpleadosJSON {
         try {
             //leemos el JSON "nuevosEmpleados.json"
             String txtJson = Files.readString(p, StandardCharsets.UTF_8);
+            if (Files.exists(Path.of(txtJson))) {
+                //creo el objeto GSON para pasar de JSON a objeto
+                Gson gson = new Gson();
+                //guardamos la informacion leida del JSON en el array
+                nuevosEmpleados = gson.fromJson(txtJson, Empleado[].class);
 
-            //creo el objeto GSON para pasar de JSON a objeto
-            Gson gson = new Gson();
-            //guardamos la informacion leida del JSON en el array
-            nuevosEmpleados = gson.fromJson(txtJson, Empleado[].class);
+                //itero sobre los empleados cargados del JSON
+                for (Empleado nuevoEmpleado : nuevosEmpleados) {
+                    String añoNacimiento = String.valueOf(nuevoEmpleado.getAñoNacimiento());
+                    Date fechaNacimiento = null;
 
-            //itero sobre los empleados cargados del JSON
-            for (Empleado nuevoEmpleado : nuevosEmpleados) {
-                String añoNacimiento = String.valueOf(nuevoEmpleado.getAñoNacimiento());
-                Date fechaNacimiento = null;
-
-                //parseamos la fecha de nacimiento
-                if (añoNacimiento != null && !añoNacimiento.equals("null")) {
-                    try {
-                        fechaNacimiento = new SimpleDateFormat("yyyy").parse(añoNacimiento);
-                    } catch (ParseException e) {
-                        System.err.println("Error al parsear la fecha de nacimiento: " + e.getMessage());
-                        return;
+                    //parseamos la fecha de nacimiento
+                    if (añoNacimiento != null && !añoNacimiento.equals("null")) {
+                        try {
+                            fechaNacimiento = new SimpleDateFormat("yyyy").parse(añoNacimiento);
+                        } catch (ParseException e) {
+                            System.err.println("Error al parsear la fecha de nacimiento: " + e.getMessage());
+                            return;
+                        }
                     }
-                }
 
-                //guardo en el objeto Empleado los datos del JSON
-                Empleado empleado = new Empleado(
-                        nuevoEmpleado.getNombre(),
-                        nuevoEmpleado.getSueldo(),
-                        fechaNacimiento,
-                        new Date(),
-                        nuevoEmpleado.getIdDepartamento()
-                );
-                //guardamos la informacion en el array "listaEmpleados"
-                EscribirCSV.listaEmpleados.add(empleado);
-                System.out.println("Datos de nuevosEmpleados.json guardados");
+                    //guardo en el objeto Empleado los datos del JSON
+                    Empleado empleado = new Empleado(
+                            nuevoEmpleado.getNombre(),
+                            nuevoEmpleado.getSueldo(),
+                            fechaNacimiento,
+                            new Date(),
+                            nuevoEmpleado.getIdDepartamento()
+                    );
+                    //guardamos la informacion en el array "listaEmpleados"
+                    EscribirCSV.listaEmpleados.add(empleado);
+                    System.out.println("Datos de nuevosEmpleados.json guardados");
+                }
             }
+        }catch(FileNotFoundException e) {
+            System.out.println("El archivo JSON no existe");
+        }catch(MalformedInputException e) {
+            System.out.println("Comprueba que la codificación del archivo sea UTF-8");
         } catch (IOException e) {
             System.err.println("Error al leer el archivo JSON: " + e.getMessage());
         }

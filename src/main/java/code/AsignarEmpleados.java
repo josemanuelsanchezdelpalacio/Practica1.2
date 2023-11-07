@@ -2,6 +2,7 @@ package code;
 
 import javaBeans.Departamento;
 import javaBeans.Empleado;
+import libs.FicheroEscribible;
 import libs.Leer;
 
 import java.io.BufferedReader;
@@ -30,6 +31,7 @@ public class AsignarEmpleados {
 
         // Si el empleado fue encontrado en el CSV, muestro los departamentos y pido el ID del departamento
         System.out.println("Asignar departamento para el empleado: " + nombreEmpleado);
+
         LeerDepartamentos.leer();
 
         System.out.print("Elige un departamento por su ID: ");
