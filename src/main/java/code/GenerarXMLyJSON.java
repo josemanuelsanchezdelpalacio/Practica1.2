@@ -13,6 +13,7 @@ import java.nio.file.Path;
 
 import static code.EscribirCSV.listaEmpleados;
 import static code.LeerDepartamentos.departamentos;
+import static libs.FicheroEscribible.ficheroEscribible;
 
 /**Genere un archivo xml y otro json con toda la información de la empresa.**/
 public class GenerarXMLyJSON {
@@ -29,13 +30,17 @@ public class GenerarXMLyJSON {
             empresa.setDepartamentos(departamentos);
 
             //creo contexto JAXB para la clase Empresa
-            JAXBContext contexto = JAXBContext.newInstance(Empresa.class);
-            Marshaller marshaller = contexto.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            if (ficheroEscribible(p)) {
+                JAXBContext contexto = JAXBContext.newInstance(Empresa.class);
+                Marshaller marshaller = contexto.createMarshaller();
+                marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-            //guardo en el archivo empresa.xml
-            marshaller.marshal(empresa, p.toFile());
-            System.out.println("Archivo XML creado correctamente: " + p);
+                //guardo Guardo en el archivo empresa.xml
+                marshaller.marshal(empresa, p.toFile());
+                System.out.println("Archivo XML creado correctamente: " + p);
+            } else {
+                System.out.println("El archivo no se puede escribir.");
+            }
         } catch (Exception e) {
             System.err.println("Error al generar el archivo XML: " + e.getMessage());
         }
@@ -55,12 +60,16 @@ public class GenerarXMLyJSON {
         //guardo la información en el JSON
         String jsonInfo = gson.toJson(empresa);
 
-        try {
-            //escribo la información en el JSON
-            Files.writeString(p, jsonInfo);
-            System.out.println("Archivo JSON creado correctamente: " + p);
-        } catch (IOException e) {
-            System.err.println("Error al generar el archivo JSON: " + e.getMessage());
+        if (ficheroEscribible(p)) {
+            try {
+                //escribo la información en el JSON
+                Files.writeString(p, jsonInfo);
+                System.out.println("Archivo JSON creado correctamente: " + p);
+            } catch (IOException e) {
+                System.err.println("Error al generar el archivo JSON: " + e.getMessage());
+            }
+        } else {
+            System.out.println("El archivo no se puede escribir.");
         }
     }
 }
