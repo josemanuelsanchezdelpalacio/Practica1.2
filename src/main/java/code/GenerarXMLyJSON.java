@@ -25,8 +25,8 @@ public class GenerarXMLyJSON {
             Empresa empresa = new Empresa();
 
             //obtengo la lista de empleados y departamentos
-            empresa.setEmpleados(EscribirCSV.listaEmpleados);
-            empresa.setDepartamentos(LeerDepartamentos.departamentos);
+            empresa.setEmpleados(listaEmpleados);
+            empresa.setDepartamentos(departamentos);
 
             //creo contexto JAXB para la clase Empresa
             JAXBContext contexto = JAXBContext.newInstance(Empresa.class);
