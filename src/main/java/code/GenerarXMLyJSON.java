@@ -47,7 +47,6 @@ public class GenerarXMLyJSON {
         //creo una instancia de Empresa con datos existentes
         Empresa empresa = new Empresa();
         //asigno los empleados y departamentos existentes
-        empresa.setEmpleados(listaEmpleados);
         empresa.setDepartamentos(departamentos);
 
         //creo el objeto Gson para pasar de objeto a JSON
